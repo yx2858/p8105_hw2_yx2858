@@ -7,6 +7,25 @@ output: github_document
 
 ```{r}
 library(tidyverse) #load library tidyverse
+library(dplyr)
 ```
 
 # Problem 1
+
+# Problem 2
+```{r}
+Wheel_df =
+  readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
+  sheet = "Mr. Trash Wheel",   #read the dataset with sheet and range
+  range = "A2:N586") |>
+  janitor::clean_names() |>   #clean the names
+  drop_na("dumpster") |>   #omit na values
+  mutate(homes_powered = weight_tons*500/30,   #calculate the homes_powered variables
+         year = as.integer(year), #change to numerical variable
+         additional_dataset = "Mr. Trash")   #specify the dataset
+```
+
+Description of Wheel_df:
+This Wheel_df dataset contains 584 observations and 15 variables.
+
+
