@@ -26,7 +26,7 @@ Wheel_df =
 ```
 
 Description of Wheel_df:
-This Wheel_df dataset contains 584 observations and 15 variables.
+This Wheel_df dataset contains `r nrows(Wheel_df)` observations and `r names(Wheel_df)` variables. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Mr. Trash" category. This way, after merging the three datasets, "Mr. Trash" will be easily distinguished from the rest.
 
 ```{r}
 Professor_df =
@@ -40,7 +40,7 @@ Professor_df =
 ```
 
 Description of Professor_df:
-This Professor_df dataset contains 106 observations and 14 variables.
+This Professor_df dataset contains `r nrows(Professor_df)` observations and `r names(Professor_df)` variables. The total weight of trash collected by Professor Trash Wheel is `r sum(Professor_df$weight_tons)` tons. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Professor Trash" category. This way, after merging the three datasets, "Professor Trash" will be easily distinguished from the rest.
 
 ```{r}
 Gwynnda_df = 
@@ -53,8 +53,14 @@ Gwynnda_df =
          additional_dataset = "Gwynnda Trash")   #specify the dataset
 ```
 
+```{r}
+Gwynnda_cigarette =
+  filter(Gwynnda_df, month == "July" & year == 2021)
+  sum(Gwynnda_cigarette$cigarette_butts)
+```
+
 Description of Gwynnda_df:
-This Gwynnda_df dataset contains 155 observations and 13 variables.
+This Gwynnda_df dataset contains `r nrows(Gwynnda_df)` observations and `r names(Gwynnda_df)` variables. The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_cigarette$cigarette_butts)`. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Gwynnda Trash" category. This way, after merging the three datasets, "Gwynnda Trash" will be easily distinguished from the rest.
 
 ```{r}
 Combine_TrashWheel = 
@@ -62,4 +68,37 @@ Combine_TrashWheel =
 ```
 
 Description of Combine_TrashWheel:
-This dataset combines three datasets of Wheel_df, Professor_df, and Gwynnda_df with a total of 845 observations and 15 variables.
+This dataset combines three datasets of Wheel_df, Professor_df, and Gwynnda_df with a total of `r nrow(Combine_TrashWheel)` observations and `r names(Combine_TrashWheel)` variables. The additional variable of "additional_dataset" specifies each of the three corresponding categories.
+
+
+# Problem 3
+
+```{r, message=FALSE}
+baseline_mci_df = 
+  read_csv("data_mci/MCI_baseline.csv", skip = 1, na = ".") |>   #read the dataset as na
+  janitor::clean_names() |>   #clean the names
+  mutate(   #mutate sex and apoe4 variables
+    sex = replace(sex, sex == 0, "Female"),
+    sex = replace(sex, sex == 1, "Male"), 
+    apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
+    apoe4 = replace(apoe4, apoe4 == 0, "No")
+  ) |>   
+  filter(!(current_age >= age_at_onset | is.na(age_at_onset)))   #remove the participants who don't develop MCI or have already developed MCI before the study
+```
+
+```{r, message=FALSE}
+baseline_recruited_df = 
+  read_csv("data_mci/MCI_baseline.csv", skip = 1, na = ".") |>   #read the dataset as na
+  janitor::clean_names() |>   #clean the names
+  mutate(   #mutate sex and apoe4 variables
+    sex = replace(sex, sex == 0, "Female"),
+    sex = replace(sex, sex == 1, "Male"), 
+    apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
+    apoe4 = replace(apoe4, apoe4 == 0, "No")
+  )  
+  filter(baseline_recruited_df, current_age < age_at_onset | is.na(age_at_onset))   #keep the participants who develop or do not develop MCI, i.e. remove the participants who have already developed MCI before the study
+```
+
+Description of the important steps:
+There were `r nrow(baseline_recruited_df)` participants recruited for this study. Of these recruited, `r nrow(baseline_mci_df)` participants develop MCI.
+
