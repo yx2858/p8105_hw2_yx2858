@@ -20,8 +20,8 @@ Wheel_df =
   range = "A2:N586") |>
   janitor::clean_names() |>   #clean the names
   drop_na("dumpster") |>   #omit na values
-  mutate(homes_powered = weight_tons*500/30,   #calculate the homes_powered variables
-         year = as.integer(year), #change to numerical variable
+  mutate(homes_powered = weight_tons*500/30,   #calculate the homes_powered variable
+         year = as.integer(year),   #change to numerical variable
          additional_dataset = "Mr. Trash")   #specify the dataset
 ```
 
@@ -35,9 +35,23 @@ Professor_df =
   range = "A2:M108") |>
   janitor::clean_names() |>   #clean the names
   drop_na("dumpster") |>   #omit na values
-  mutate(homes_powered = weight_tons*500/30,   #calculate the homes_powered variables
+  mutate(homes_powered = weight_tons*500/30,   #calculate the homes_powered variable
          additional_dataset = "Professor Trash")   #specify the dataset
 ```
 
 Description of Professor_df:
 This Professor_df dataset contains 106 observations and 14 variables.
+
+```{r}
+Gwynnda_df = 
+  readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
+  sheet = "Gwynnda Trash Wheel",   #read the dataset with sheet and range
+  range = "A2:L157") |>
+  janitor::clean_names() |>   #clean the names
+  drop_na("dumpster") |>   #omit na values
+  mutate(homes_powered = weight_tons*500/30,   #calculate the homes_powered variable
+         additional_dataset = "Gwynnda Trash")   #specify the dataset
+```
+
+Description of Gwynnda_df:
+This Gwynnda_df dataset contains 155 observations and 13 variables.
