@@ -28,4 +28,16 @@ Wheel_df =
 Description of Wheel_df:
 This Wheel_df dataset contains 584 observations and 15 variables.
 
+```{r}
+Professor_df =
+  readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
+  sheet = "Professor Trash Wheel",   #read the dataset with sheet and range
+  range = "A2:M108") |>
+  janitor::clean_names() |>   #clean the names
+  drop_na("dumpster") |>   #omit na values
+  mutate(homes_powered = weight_tons*500/30,   #calculate the homes_powered variables
+         additional_dataset = "Professor Trash")   #specify the dataset
+```
 
+Description of Professor_df:
+This Professor_df dataset contains 106 observations and 14 variables.
