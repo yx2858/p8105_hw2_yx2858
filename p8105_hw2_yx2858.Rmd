@@ -55,3 +55,11 @@ Gwynnda_df =
 
 Description of Gwynnda_df:
 This Gwynnda_df dataset contains 155 observations and 13 variables.
+
+```{r}
+Combine_TrashWheel = 
+  bind_rows(Wheel_df, Professor_df, Gwynnda_df)   #combine three datasets
+```
+
+Description of Combine_TrashWheel:
+This dataset combines three datasets of Wheel_df, Professor_df, and Gwynnda_df with a total of 845 observations and 15 variables.
