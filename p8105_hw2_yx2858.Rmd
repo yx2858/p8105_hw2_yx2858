@@ -5,7 +5,7 @@ date: "2023-10-01"
 output: github_document
 ---
 
-```{r}
+```{r, message=FALSE}
 library(tidyverse) #load library tidyverse
 library(dplyr)
 ```
@@ -13,7 +13,7 @@ library(dplyr)
 # Problem 1
 
 # Problem 2
-```{r}
+```{r, message=FALSE}
 Wheel_df =
   readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
   sheet = "Mr. Trash Wheel",   #read the dataset with sheet and range
@@ -25,10 +25,10 @@ Wheel_df =
          additional_dataset = "Mr. Trash")   #specify the dataset
 ```
 
-Description of Wheel_df:
-This Wheel_df dataset contains `r nrows(Wheel_df)` observations and `r names(Wheel_df)` variables. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Mr. Trash" category. This way, after merging the three datasets, "Mr. Trash" will be easily distinguished from the rest.
+#### Description of Wheel_df:
+This Wheel_df dataset contains `r nrow(Wheel_df)` observations and `r names(Wheel_df)` variables. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Mr. Trash" category. This way, after merging the three datasets, "Mr. Trash" will be easily distinguished from the rest.
 
-```{r}
+```{r, message=FALSE}
 Professor_df =
   readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
   sheet = "Professor Trash Wheel",   #read the dataset with sheet and range
@@ -39,10 +39,10 @@ Professor_df =
          additional_dataset = "Professor Trash")   #specify the dataset
 ```
 
-Description of Professor_df:
-This Professor_df dataset contains `r nrows(Professor_df)` observations and `r names(Professor_df)` variables. The total weight of trash collected by Professor Trash Wheel is `r sum(Professor_df$weight_tons)` tons. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Professor Trash" category. This way, after merging the three datasets, "Professor Trash" will be easily distinguished from the rest.
+#### Description of Professor_df:
+This Professor_df dataset contains `r nrow(Professor_df)` observations and `r names(Professor_df)` variables. The total weight of trash collected by Professor Trash Wheel is `r sum(Professor_df$weight_tons)` tons. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Professor Trash" category. This way, after merging the three datasets, "Professor Trash" will be easily distinguished from the rest.
 
-```{r}
+```{r, message=FALSE}
 Gwynnda_df = 
   readxl::read_excel("202309 Trash Wheel Collection Data.xlsx",
   sheet = "Gwynnda Trash Wheel",   #read the dataset with sheet and range
@@ -53,21 +53,21 @@ Gwynnda_df =
          additional_dataset = "Gwynnda Trash")   #specify the dataset
 ```
 
-```{r}
+```{r, message=FALSE}
 Gwynnda_cigarette =
   filter(Gwynnda_df, month == "July" & year == 2021)
   sum(Gwynnda_cigarette$cigarette_butts)
 ```
 
-Description of Gwynnda_df:
-This Gwynnda_df dataset contains `r nrows(Gwynnda_df)` observations and `r names(Gwynnda_df)` variables. The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_cigarette$cigarette_butts)`. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Gwynnda Trash" category. This way, after merging the three datasets, "Gwynnda Trash" will be easily distinguished from the rest.
+#### Description of Gwynnda_df:
+This Gwynnda_df dataset contains `r nrow(Gwynnda_df)` observations and `r names(Gwynnda_df)` variables. The total number of cigarette butts collected by Gwynnda in July of 2021 is `r sum(Gwynnda_cigarette$cigarette_butts)`. The variable "homes_powered" is calculated using the existing variable "weight_tons" to determine each ton of trash equates to, on average 500 kilowatts of electricity an average household will use 30 kilowatts per day. The additional variable of "additional_dataset" specifies the corresponding data to the "Gwynnda Trash" category. This way, after merging the three datasets, "Gwynnda Trash" will be easily distinguished from the rest.
 
-```{r}
+```{r, message=FALSE}
 Combine_TrashWheel = 
   bind_rows(Wheel_df, Professor_df, Gwynnda_df)   #combine three datasets
 ```
 
-Description of Combine_TrashWheel:
+#### Description of Combine_TrashWheel:
 This dataset combines three datasets of Wheel_df, Professor_df, and Gwynnda_df with a total of `r nrow(Combine_TrashWheel)` observations and `r names(Combine_TrashWheel)` variables. The additional variable of "additional_dataset" specifies each of the three corresponding categories.
 
 
@@ -99,6 +99,20 @@ baseline_recruited_df =
   filter(baseline_recruited_df, current_age < age_at_onset | is.na(age_at_onset))   #keep the participants who develop or do not develop MCI, i.e. remove the participants who have already developed MCI before the study
 ```
 
-Description of the important steps:
-There were `r nrow(baseline_recruited_df)` participants recruited for this study. Of these recruited, `r nrow(baseline_mci_df)` participants develop MCI.
+```{r, message=FALSE}
+Average_age =
+  pull(baseline_recruited_df, current_age)
+  mean(Average_age)   #calculate the mean of the baseline age
+```
+
+```{r, message=FALSE}
+filter(baseline_recruited_df, sex == "Female" & apoe4 == "Yes")   #select females who are apoe4 carriers
+filter(baseline_recruited_df, sex == "Female")   #select females
+```
+
+Proportion calculation:
+63/211 = 0.298 = 29.8%
+
+#### Description of the important steps:
+There were 479 participants recruited for this study. Of these recruited, 93 participants develop MCI. The average baseline age is 65.04679 years old. 29.8% of women in the study are APOE4 carriers.
 
