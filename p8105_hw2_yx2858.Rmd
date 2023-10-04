@@ -131,4 +131,11 @@ amyloid_df =
 #### Comment on the steps and dataset:
 The variable "pivot_longer" is implemented to extend the dataset longer instead of wider. The variable "study_id" in the original file "mci_amyloid.csv" is not consistent, so it is rewritten into "id". This step is important to better find data after combing both dataset of "mci_amyloid.csv" and "MCI_baseline.csv".
 
+```{r, message=FALSE}
+Combine_Participant = 
+  inner_join(baseline_mci_df, amyloid_df, by = "id")   #join two dataset by id
+write.csv(Combine_Participant, "Combine_Participant.csv")   #export the dataset
+```
 
+#### Description of Combine_Participant:
+There are some of the participants that only appear in the baseline or in amyloid dataset based on the id variable. The first missing "id" in amyloid but appear in baseline is id 14. By joining two dataset together, the Combine_Participant dataset contains `r nrow(Combine_Participant)` observations and `r names(Combine_Participant)` variables, and `r nrow(Combine_Participant)/4` participants appear in both dataset at the same time.
