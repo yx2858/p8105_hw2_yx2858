@@ -100,33 +100,21 @@ baseline_recruited_df =
 ```
 
 ```{r, message=FALSE}
-baseline_df = 
-  read_csv("data_mci/MCI_baseline.csv", skip = 1, na = ".") |>   #read the dataset as na
-  janitor::clean_names() |>   #clean the names
-  mutate(   #mutate sex and apoe4 variables
-    sex = replace(sex, sex == 0, "Female"),
-    sex = replace(sex, sex == 1, "Male"), 
-    apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
-    apoe4 = replace(apoe4, apoe4 == 0, "No")
-  )
-```
-
-```{r, message=FALSE}
 Average_age =
-  pull(baseline_df, current_age)
+  pull(baseline_recruited_df, current_age)
   mean(Average_age)   #calculate the mean of the baseline age
 ```
 
 ```{r, message=FALSE}
-filter(baseline_df, sex == "Female" & apoe4 == "Yes")   #select females who are apoe4 carriers
-filter(baseline_df, sex == "Female")   #select females
+filter(baseline_recruited_df, sex == "Female" & apoe4 == "Yes")   #select females who are apoe4 carriers
+filter(baseline_recruited_df, sex == "Female")   #select females
 ```
 
 Proportion calculation:
-63/211 = 0.298 = 29.8%
+63/210 = 0.3 = 30%
 
 #### Description of the important steps:
-There were 479 participants recruited for this study. Of these recruited, 93 participants develop MCI. The average baseline age is 65.04679 years old. 29.8% of women in the study are APOE4 carriers.
+There were 479 participants recruited for this study. Of these recruited, 93 participants develop MCI. The average baseline age is 65.0286 years old. 30% of women in the study are APOE4 carriers.
 
 ```{r, message=FALSE}
 amyloid_df =
