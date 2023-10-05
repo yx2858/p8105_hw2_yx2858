@@ -95,19 +95,31 @@ baseline_recruited_df =
     sex = replace(sex, sex == 1, "Male"), 
     apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
     apoe4 = replace(apoe4, apoe4 == 0, "No")
-  )  
-  filter(baseline_recruited_df, current_age < age_at_onset | is.na(age_at_onset))   #keep the participants who develop or do not develop MCI, i.e. remove the participants who have already developed MCI before the study
+  ) |> 
+  filter(current_age < age_at_onset | is.na(age_at_onset))   #keep the participants who develop or do not develop MCI, i.e. remove the participants who have already developed MCI before the study
+```
+
+```{r, message=FALSE}
+baseline_df = 
+  read_csv("data_mci/MCI_baseline.csv", skip = 1, na = ".") |>   #read the dataset as na
+  janitor::clean_names() |>   #clean the names
+  mutate(   #mutate sex and apoe4 variables
+    sex = replace(sex, sex == 0, "Female"),
+    sex = replace(sex, sex == 1, "Male"), 
+    apoe4 = replace(apoe4, apoe4 == 1, "Yes"),
+    apoe4 = replace(apoe4, apoe4 == 0, "No")
+  )
 ```
 
 ```{r, message=FALSE}
 Average_age =
-  pull(baseline_recruited_df, current_age)
+  pull(baseline_df, current_age)
   mean(Average_age)   #calculate the mean of the baseline age
 ```
 
 ```{r, message=FALSE}
-filter(baseline_recruited_df, sex == "Female" & apoe4 == "Yes")   #select females who are apoe4 carriers
-filter(baseline_recruited_df, sex == "Female")   #select females
+filter(baseline_df, sex == "Female" & apoe4 == "Yes")   #select females who are apoe4 carriers
+filter(baseline_df, sex == "Female")   #select females
 ```
 
 Proportion calculation:
@@ -120,22 +132,37 @@ There were 479 participants recruited for this study. Of these recruited, 93 par
 amyloid_df =
   read_csv("data_mci/mci_amyloid.csv", skip = 1) |>   #read the dataset of amyloid
   janitor::clean_names() |>   #clean the names
-  rename(id = study_id) |>   #rename to make the variable consistent
+  rename(id = study_id,
+         year_0 = baseline,
+         year_2 = time_2,
+         year_4 = time_4,
+         year_6 = time_6,
+         year_8 = time_8) |>   #rename to make the variable consistent
   pivot_longer(   #extend the dataset
-    time_2:time_8,
+    year_0:year_8,
     names_to = "time",
     values_to = "value"
   )
 ```
 
 #### Comment on the steps and dataset:
-The variable "pivot_longer" is implemented to extend the dataset longer instead of wider. The variable "study_id" in the original file "mci_amyloid.csv" is not consistent, so it is rewritten into "id". This step is important to better find data after combing both dataset of "mci_amyloid.csv" and "MCI_baseline.csv".
+This "amyloid_df" dataset contains `r nrow(amyloid_df)` observations and `r names(amyloid_df)` variables. The variable "pivot_longer" is implemented to extend the dataset longer instead of wider. The variable "study_id" in the original file "mci_amyloid.csv" is not consistent, so it is rewritten into "id". This step is important to better find data after combing both dataset of "mci_amyloid.csv" and "MCI_baseline.csv".
+
+```{r, message=FALSE}
+baseline_only =
+  anti_join(baseline_recruited_df, amyloid_df, by = "id")
+amyloid_only =
+  anti_join(amyloid_df, baseline_recruited_df, by = "id")
+```
+
+#### Description of baseline_only and amyloid_only:
+There are `r nrow(baseline_only)` participants that only appear in the baseline dataset, and there are `r nrow(amyloid_only)` participants that only appear in the amyloid dataset.
 
 ```{r, message=FALSE}
 Combine_Participant = 
-  inner_join(baseline_mci_df, amyloid_df, by = "id")   #join two dataset by id
+  inner_join(baseline_recruited_df, amyloid_df, by = "id")   #join two dataset by id
 write.csv(Combine_Participant, "Combine_Participant.csv")   #export the dataset
 ```
 
 #### Description of Combine_Participant:
-There are some of the participants that only appear in the baseline or in amyloid dataset based on the id variable. The first missing "id" in amyloid but appear in baseline is id 14. By joining two dataset together, the Combine_Participant dataset contains `r nrow(Combine_Participant)` observations and `r names(Combine_Participant)` variables, and `r nrow(Combine_Participant)/4` participants appear in both dataset at the same time.
+There are some of the participants that only appear in the baseline or in amyloid dataset based on the id variable. The first missing "id" in amyloid but appear in baseline is id 14. By joining two dataset together, the Combine_Participant dataset contains `r nrow(Combine_Participant)` observations and `r names(Combine_Participant)` variables, and `r nrow(Combine_Participant)/5` participants appear in both dataset at the same time.
